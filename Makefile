@@ -1,9 +1,10 @@
-test: init
-	terraform validate
+test: fmt init validate
 
-init:
+i init:
 	terraform init
 
-fmt:
-	terraform fmt -recursive
+v validate:
+	terraform validate
 
+f fmt:
+	terraform fmt
