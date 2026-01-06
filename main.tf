@@ -1,14 +1,14 @@
 locals {
-  public_info_read = <<-EOF
+  public_info_read_ifconfig_me = <<-EOF
       timeout -k $((TIMEOUT + 2)) $TIMEOUT bash -c '
-        ip=$(curl -sk --connect-timeout $TIMEOUT $PUBLIC_IP_DISCOVERY_ENDPOINT 2>/dev/null || echo "")
-        cidr=$${ip:+$ip/32}
-        cat <<-EOD
-        {
-          "public_ip": "$ip",
-          "cidr_block": "$cidr"
-        }
-EOD
+        set -o pipefail
+        if ip=$(curl -sk --connect-timeout $TIMEOUT $PUBLIC_IP_DISCOVERY_ENDPOINT_IFCONFIG_ME 2>/dev/null); then
+          echo '{"public_ip": "'$ip'","cidr_block": "'$ip/32'","source":"'$PUBLIC_IP_DISCOVERY_ENDPOINT_IFCONFIG_ME'"}'
+        elif ip=$(curl -sk --connect-timeout $TIMEOUT $PUBLIC_IP_DISCOVERY_ENDPOINT_IPINFO_IO 2>/dev/null | jq -r .ip); then
+          echo '{"public_ip": "'$ip'","cidr_block": "'$ip/32'","source":"'$PUBLIC_IP_DISCOVERY_ENDPOINT_IPINFO_IO'"}'
+        else
+          echo '{"public_ip": "0.0.0.0","cidr_block": "0.0.0.0/32","source":null}'
+        fi
     '
     EOF
 }
@@ -22,7 +22,8 @@ resource "shell_script" "public_info" {
   }
 
   environment = {
-    PUBLIC_IP_DISCOVERY_ENDPOINT = "https://ifconfig.me"
+    PUBLIC_IP_DISCOVERY_ENDPOINT_IFCONFIG_ME = "https://ifconfig.me"
+    PUBLIC_IP_DISCOVERY_ENDPOINT_IPINFO_IO   = "https://ipinfo.io"
     TIMEOUT                      = "10"
   }
-}
+https://ifconfig.me}
