@@ -1,5 +1,5 @@
 locals {
-  public_info_read_ifconfig_me = <<-EOF
+  public_info_read = <<-EOF
       timeout -k $((TIMEOUT + 2)) $TIMEOUT bash -c '
         set -o pipefail
         if ip=$(curl -sk --connect-timeout $TIMEOUT $PUBLIC_IP_DISCOVERY_ENDPOINT_IFCONFIG_ME 2>/dev/null); then
@@ -24,6 +24,6 @@ resource "shell_script" "public_info" {
   environment = {
     PUBLIC_IP_DISCOVERY_ENDPOINT_IFCONFIG_ME = "https://ifconfig.me"
     PUBLIC_IP_DISCOVERY_ENDPOINT_IPINFO_IO   = "https://ipinfo.io"
-    TIMEOUT                      = "10"
+    TIMEOUT                                  = "10"
   }
 }
