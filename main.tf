@@ -26,4 +26,4 @@ resource "shell_script" "public_info" {
     PUBLIC_IP_DISCOVERY_ENDPOINT_IPINFO_IO   = "https://ipinfo.io"
     TIMEOUT                      = "10"
   }
-https://ifconfig.me}
+}
